@@ -9,5 +9,8 @@
 ### Install All Requirements
 > pip install -r requirements.txt
 
+### Define All Environment Variables with their correct values
+* Variable names are defined in env-template file
+
 ### Command For Running project
 > python notion_page_download.py

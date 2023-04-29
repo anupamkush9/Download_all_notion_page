@@ -1,5 +1,8 @@
 # For Runnig the Project at your local
 
+### Install virtualenv
+> sudo apt install python3-virtualenv
+
 ### Create Virtual Environment by below command
 > virtualenv venv
 

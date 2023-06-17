@@ -6,10 +6,13 @@
 ### Create Virtual Environment by below command
 > virtualenv venv
 
+### Activate virtualenv
+> source virtualenv/bin/activate
+
 ### Install All Requirements
 > pip install -r requirements.txt
 
-### Define All Environment Variables with their correct values
+### Define All env_template Variables with their correct values in .env file
 * Variable names are defined in env-template file
 
 ### Command For Running project

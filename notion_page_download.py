@@ -83,7 +83,7 @@ def download_all_pages():
                 driver.find_elements(By.XPATH, "//div[text()='Everything']")[-1].click()
                 time.sleep(5)
                 driver.find_element(By.XPATH, "//div[text()='Export']").click()
-                time.sleep(5)
+                time.sleep(15)
             except Exception as e:
                 print(f"There is some exception on if block on page no {page_count} Exception is {e}")
                 traceback.format_exc()
@@ -126,8 +126,8 @@ get_all_links(all_link_divs)
 
 print(f"we have total {len(All_page_links)} no of pages.")
 print("\n Bleow All links need to be scrapped")
-for link in All_page_links:
-    print(link)
+for link,link_count in enumerate(All_page_links,1):
+    print(f"{link_count} ==> {link}")
 
 print("--------------------- --Now we going to download All PDFs-------------------------------------")
 download_all_pages()

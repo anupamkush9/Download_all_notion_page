@@ -126,7 +126,7 @@ get_all_links(all_link_divs)
 
 print(f"we have total {len(All_page_links)} no of pages.")
 print("\n Bleow All links need to be scrapped")
-for link,link_count in enumerate(All_page_links,1):
+for link_count, link in enumerate(All_page_links,1):
     print(f"{link_count} ==> {link}")
 
 print("--------------------- --Now we going to download All PDFs-------------------------------------")

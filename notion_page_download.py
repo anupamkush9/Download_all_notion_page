@@ -1,4 +1,4 @@
-import time
+import time, traceback
 import undetected_chromedriver as uc
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -7,6 +7,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 from dotenv import dotenv_values
+
 
 # get variables from .env file
 env_vars = dotenv_values('.env')
@@ -75,12 +76,17 @@ def download_all_pages():
                 time.sleep(5)
                 driver.find_element(By.XPATH, "//div[text()='Current view']").click()
                 time.sleep(5)
-                driver.find_elements(By.XPATH, "//div[text()='Everything']")[1].click()
+                driver.find_elements(By.XPATH, "//div[text()='Current view']")[-1].click()
+                time.sleep(5)
+                driver.find_element(By.XPATH, "//div[text()='Everything']").click()
+                time.sleep(5)
+                driver.find_elements(By.XPATH, "//div[text()='Everything']")[-1].click()
                 time.sleep(5)
                 driver.find_element(By.XPATH, "//div[text()='Export']").click()
-                time.sleep(15)
+                time.sleep(5)
             except Exception as e:
                 print(f"There is some exception on if block on page no {page_count} Exception is {e}")
+                traceback.format_exc()
         else:
             try:
                 WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, 'notion-topbar-more-button')))
@@ -95,13 +101,18 @@ def download_all_pages():
                     driver.find_element(By.XPATH, "//div[text()='PDF']").click()
                 except:
                     driver.find_element(By.XPATH, "//div[text()='Current view']").click()
+                    time.sleep(10)
+                    driver.find_elements(By.XPATH, "//div[text()='Current view']")[-1].click()
                     time.sleep(5)
-                    driver.find_elements(By.XPATH, "//div[text()='Everything']")[1].click()
-                time.sleep(7)
+                    driver.find_element(By.XPATH, "//div[text()='Everything']").click()
+                    time.sleep(5)
+                    driver.find_elements(By.XPATH, "//div[text()='Everything']")[-1].click()
+                    time.sleep(5)
                 driver.find_element(By.XPATH, "//div[text()='Export']").click()
                 time.sleep(15)
             except Exception as e:
                 print(f"There is some exception on else block page no {page_count} Exception is {e}")
+                traceback.format_exc()
     else:
         print("Complete Scrapping is Done now you can close the program")
 
@@ -120,7 +131,6 @@ for link in All_page_links:
 
 print("--------------------- --Now we going to download All PDFs-------------------------------------")
 download_all_pages()
-
 driver.implicitly_wait(20)
 
 # Close the browser

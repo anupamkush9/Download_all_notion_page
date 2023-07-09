@@ -83,7 +83,7 @@ def download_all_pages():
                 driver.find_elements(By.XPATH, "//div[text()='Everything']")[-1].click()
                 time.sleep(5)
                 driver.find_element(By.XPATH, "//div[text()='Export']").click()
-                time.sleep(15)
+                time.sleep(25)
             except Exception as e:
                 print(f"There is some exception on if block on page no {page_count} Exception is {e}")
                 traceback.format_exc()
@@ -109,7 +109,7 @@ def download_all_pages():
                     driver.find_elements(By.XPATH, "//div[text()='Everything']")[-1].click()
                     time.sleep(5)
                 driver.find_element(By.XPATH, "//div[text()='Export']").click()
-                time.sleep(15)
+                time.sleep(25)
             except Exception as e:
                 print(f"There is some exception on else block page no {page_count} Exception is {e}")
                 traceback.format_exc()

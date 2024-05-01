@@ -15,7 +15,7 @@ email_address = env_vars['EMAIL_ADDRESS']
 password = env_vars['PASSWORD']
 notion_first_page_link = env_vars['NOTION_FIRST_PAGE_LINK']
 
-driver = uc.Chrome(version_main = 119)
+driver = uc.Chrome()
 
 def login_into_notion_and_return_page_data():
     try:

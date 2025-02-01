@@ -14,8 +14,9 @@ env_vars = dotenv_values('.env')
 email_address = env_vars['EMAIL_ADDRESS']
 password = env_vars['PASSWORD']
 notion_first_page_link = env_vars['NOTION_FIRST_PAGE_LINK']
+chrome_version = int(env_vars['CHROME_VERSION'])
 
-driver = uc.Chrome()
+driver = uc.Chrome(version_main = chrome_version)
 
 def login_into_notion_and_return_page_data():
     try:
@@ -24,10 +25,12 @@ def login_into_notion_and_return_page_data():
             time.sleep(5)
         except Exception as e:
             print("There is an exceptio opening the url....",e)
+            print(traceback.format_exc())
         # Locate Continue with Google button
         google_button = driver.find_element(By.XPATH, "//div[contains(text(),'Continue with Google')]")
         google_button.click()
-        print("Locate Continue with Google button")
+        print("Located Continue with Google button and clicked on it.")
+
         # Now as Email is asking in new window so window switching is required.
         driver.switch_to.window(driver.window_handles[1])
         email_input = driver.find_element(By.XPATH, "//input[@type='email']")
@@ -47,6 +50,7 @@ def login_into_notion_and_return_page_data():
         return driver.page_source
     except Exception as e:
         print("there is an Exception in login_into_notion_and_return_page_data: ",e)
+        print(traceback.format_exc())
 
 All_page_links = []
 
@@ -56,6 +60,7 @@ def get_all_links(all_link_divs):
             All_page_links.append(div_data.find('a').get('href'))
         except Exception as e:
             print("There is some exception in find the a tag href",e)
+            print(traceback.format_exc())
 
 
 def download_all_pages():
@@ -83,7 +88,7 @@ def download_all_pages():
                 driver.find_elements(By.XPATH, "//div[text()='Everything']")[-1].click()
                 time.sleep(5)
                 driver.find_element(By.XPATH, "//div[text()='Export']").click()
-                time.sleep(35)
+                time.sleep(45)
             except Exception as e:
                 print(f"There is some exception on if block on page no {page_count} Exception is {e}")
                 traceback.format_exc()
@@ -101,7 +106,7 @@ def download_all_pages():
                     driver.find_element(By.XPATH, "//div[text()='PDF']").click()
                 except:
                     driver.find_element(By.XPATH, "//div[text()='Current view']").click()
-                    time.sleep(10)
+                    time.sleep(5)
                     driver.find_elements(By.XPATH, "//div[text()='Current view']")[-1].click()
                     time.sleep(5)
                     driver.find_element(By.XPATH, "//div[text()='Everything']").click()
@@ -109,7 +114,7 @@ def download_all_pages():
                     driver.find_elements(By.XPATH, "//div[text()='Everything']")[-1].click()
                     time.sleep(5)
                 driver.find_element(By.XPATH, "//div[text()='Export']").click()
-                time.sleep(35)
+                time.sleep(45)
             except Exception as e:
                 print(f"There is some exception on else block page no {page_count} Exception is {e}")
                 traceback.format_exc()

@@ -1,3 +1,4 @@
 EMAIL_ADDRESS=Enter your email address
 PASSWORD=Your Email Password
 NOTION_FIRST_PAGE_LINK=provide notion first page link
+CHROME_VERSION=sepcify your system chrome verion for example 131

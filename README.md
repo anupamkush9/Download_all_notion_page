@@ -7,7 +7,7 @@
 > virtualenv venv
 
 ### Activate virtualenv
-> source virtualenv/bin/activate
+> source venv/bin/activate
 
 ### Install All Requirements
 > pip install -r requirements.txt

@@ -123,7 +123,7 @@ def download_all_pages():
 
 page_data = login_into_notion_and_return_page_data()
 soup = BeautifulSoup(page_data, 'html.parser')
-all_link_divs = soup.find_all("div", class_="notion-selectable notion-page-block")
+all_link_divs = soup.select('.notion-outliner-private-header-container .notion-selectable.notion-page-block, .notion-outliner-private-header .notion-selectable.notion-page-block')
 
 print("------------------------now we are going to get all link divs--------------------------------")
 get_all_links(all_link_divs)

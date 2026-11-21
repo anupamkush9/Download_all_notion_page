@@ -3,6 +3,7 @@ import undetected_chromedriver as uc
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
@@ -27,13 +28,15 @@ def login_into_notion_and_return_page_data():
             print("There is an exceptio opening the url....",e)
             print(traceback.format_exc())
         # Locate Continue with Google button
-        google_button = driver.find_element(By.XPATH, "//div[contains(text(),'Continue with Google')]")
+        # google_button = driver.find_element(By.XPATH, "//div[contains(text(),'Continue with Google')]")
+        google_button = driver.find_element(By.XPATH, "/html/body/div/div/div/div[1]/div/div[2]/div/div/div/main/section/div[2]/div[3]/div[1]/div[2]/div[1]")
         google_button.click()
         print("Located Continue with Google button and clicked on it.")
 
         # Now as Email is asking in new window so window switching is required.
         driver.switch_to.window(driver.window_handles[1])
-        email_input = driver.find_element(By.XPATH, "//input[@type='email']")
+        # email_input = driver.find_element(By.XPATH, "//input[@type='email']")
+        email_input = driver.find_element(By.XPATH, "/html/body/div[2]/div[1]/div[1]/div[2]/c-wiz/main/div[2]/div/div/div[1]/span/section/div/div/div[1]/div[1]/div[1]/div/div[1]/input")
         email_input.send_keys(email_address)
         email_input.send_keys(Keys.RETURN)
         print("Email entered successfully..........")
@@ -54,6 +57,55 @@ def login_into_notion_and_return_page_data():
 
 All_page_links = []
 
+def open_export_menu():
+    wait = WebDriverWait(driver, 30)
+
+    def click_visible_item(locator):
+        element = wait.until(
+            lambda _: next(
+                (
+                    candidate
+                    for candidate in driver.find_elements(*locator)
+                    if candidate.is_displayed()
+                    and candidate.is_enabled()
+                    and candidate.size["width"] > 0
+                    and candidate.size["height"] > 0
+                ),
+                False,
+            )
+        )
+        element.click()
+
+    wait.until(
+        EC.element_to_be_clickable((By.CLASS_NAME, 'notion-topbar-more-button'))
+    ).click()
+    click_visible_item(
+        (
+            By.XPATH,
+            "//div[@role='option'][.//div[normalize-space()='More']]"
+            "//div[normalize-space()='More']",
+        )
+    )
+    click_visible_item((By.XPATH, "//div[normalize-space()='Export']"))
+
+
+def navigate_to_page(url):
+    for attempt in range(3):
+        try:
+            driver.get(url)
+            return
+        except WebDriverException as e:
+            error_message = str(e).lower()
+            is_transient_navigation_error = (
+                "cannot determine loading status" in error_message
+                or "target frame detached" in error_message
+            )
+            if not is_transient_navigation_error or attempt == 2:
+                raise
+            print(f"Navigation failed temporarily; retrying ({attempt + 1}/2): {e}")
+            time.sleep(2)
+
+
 def get_all_links(all_link_divs):
     for div_data in all_link_divs:
         try:
@@ -67,13 +119,15 @@ def download_all_pages():
     for page_count,page in enumerate(All_page_links,1):
         # Navigate to the webpage
         print(f"current page is {page_count} and Now we going to download https://www.notion.so{page}")
-        driver.get(f"https://www.notion.so{page}")
+        try:
+            navigate_to_page(f"https://www.notion.so{page}")
+        except WebDriverException as e:
+            print(f"Could not open page no {page_count} after retries: {e}")
+            print(traceback.format_exc())
+            continue
         if page_count == 1:
             try:
-                WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, 'notion-topbar-more-button')))
-                driver.find_element(By.CLASS_NAME, 'notion-topbar-more-button').click()
-                time.sleep(5)
-                driver.find_element(By.XPATH, "//div[text()='Export']").click()
+                open_export_menu()
                 time.sleep(5)
                 driver.find_element(By.XPATH, "//div[text()='Markdown & CSV']").click()
                 time.sleep(5)
@@ -91,13 +145,10 @@ def download_all_pages():
                 time.sleep(45)
             except Exception as e:
                 print(f"There is some exception on if block on page no {page_count} Exception is {e}")
-                traceback.format_exc()
+                print(traceback.format_exc())
         else:
             try:
-                WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, 'notion-topbar-more-button')))
-                driver.find_element(By.CLASS_NAME, 'notion-topbar-more-button').click()
-                time.sleep(5)
-                driver.find_element(By.XPATH, "//div[text()='Export']").click()
+                open_export_menu()
                 time.sleep(5)
 
                 try:
@@ -117,7 +168,7 @@ def download_all_pages():
                 time.sleep(45)
             except Exception as e:
                 print(f"There is some exception on else block page no {page_count} Exception is {e}")
-                traceback.format_exc()
+                print(traceback.format_exc())
     else:
         print("Complete Scrapping is Done now you can close the program")
 
